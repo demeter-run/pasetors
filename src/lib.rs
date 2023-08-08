@@ -189,12 +189,12 @@
 #[macro_use]
 extern crate alloc;
 
-pub mod pae;
+mod pae;
 
 /// Errors for token operations.
 pub mod errors;
 
-pub mod common;
+mod common;
 
 #[cfg(feature = "std")]
 /// Claims for tokens and validation thereof.
