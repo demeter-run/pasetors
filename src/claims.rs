@@ -41,6 +41,12 @@ impl Claims {
         Ok(claims)
     }
 
+    pub fn empty() -> Self {
+        Self {
+            list_of: HashMap::new(),
+        }
+    }
+
     /// Create a new `Claims` instance expiring in `duration`, setting:
     /// - `iat`, `nbf` to current UTC time
     /// - `iat + duration`
@@ -63,6 +69,16 @@ impl Claims {
         claims.expiration(&exp.format(&Rfc3339).map_err(|_| Error::InvalidClaim)?)?;
 
         Ok(claims)
+    }
+
+    pub fn expires_in(&mut self, duration: &core::time::Duration) -> Result<(), Error> {
+        let iat = OffsetDateTime::now_utc();
+        let mut exp = iat;
+        exp += Duration::try_from(*duration).map_err(|_| Error::InvalidClaim)?;
+
+        self.expiration(&exp.format(&Rfc3339).map_err(|_| Error::InvalidClaim)?)?;
+
+        Ok(())
     }
 
     /// Removes the `exp` claim, indicating a token that never expires.
